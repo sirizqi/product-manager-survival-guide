@@ -24,6 +24,7 @@ Synchronized with all 47 chapters across 9 core modules of the PM Playbooks comp
   - Light & Dark mode toggle.
 - 🐳 **Dockerized Production Build**:
   - Multi-stage Dockerfile (Node 22 Alpine builder + Nginx Alpine runner with gzip compression and SPA routing).
+  - Production & Coolify Ready: uses internal `expose: 80` without host port conflicts.
 
 ---
 
@@ -37,6 +38,11 @@ docker compose up -d --build
 ```
 
 Access the app at: **`http://localhost:8080`**
+
+### Deploying to Coolify:
+- In Coolify, select **Docker Compose** or **Dockerfile** build pack.
+- Set your domain in Coolify (e.g. `https://pm.yourdomain.com`).
+- Coolify automatically routes traffic to internal port `80` with SSL and zero host port collisions.
 
 To stop the container:
 ```bash
