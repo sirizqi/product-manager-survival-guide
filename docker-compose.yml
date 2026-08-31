@@ -1,0 +1,11 @@
+services:
+  pm-reading-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pm-playbooks-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:80"
+    environment:
+      - NODE_ENV=production
