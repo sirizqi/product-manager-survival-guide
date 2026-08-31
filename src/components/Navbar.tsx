@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Bookmark, Sun, Moon, BookOpen, Menu, X, Flame, Languages } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
@@ -18,24 +18,66 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isDocs = location.pathname.startsWith('/docs');
+  const [activeSection, setActiveSection] = useState<'home' | 'docs' | 'tracks' | 'modules'>('home');
+
+  // Real-time ScrollSpy for Landing Page Sections
+  useEffect(() => {
+    if (isDocs) {
+      setActiveSection('docs');
+      return;
+    }
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const tracksEl = document.getElementById('learning-tracks');
+      const modulesEl = document.getElementById('modules-section');
+
+      const tracksTop = tracksEl ? tracksEl.offsetTop - 140 : 800;
+      const modulesTop = modulesEl ? modulesEl.offsetTop - 140 : 1600;
+
+      if (scrollY >= modulesTop) {
+        setActiveSection('modules');
+      } else if (scrollY >= tracksTop) {
+        setActiveSection('tracks');
+      } else {
+        setActiveSection('home');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isDocs, location]);
 
   const handleHomeClick = (e: React.MouseEvent) => {
     if (location.pathname === '/') {
       e.preventDefault();
+      window.history.pushState(null, '', '/');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      setActiveSection('home');
     }
   };
 
-  const scrollToSection = (id: string, e: React.MouseEvent) => {
+  const scrollToSection = (id: string, sectionKey: 'tracks' | 'modules', e: React.MouseEvent) => {
     if (location.pathname === '/') {
       e.preventDefault();
+      window.history.pushState(null, '', `/#${id}`);
       const el = document.getElementById(id);
       if (el) {
         const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
         window.scrollTo({ top: y, behavior: 'smooth' });
+        setActiveSection(sectionKey);
       }
     }
   };
+
+  const getNavClass = (isActive: boolean) =>
+    `px-3.5 py-1.5 border-2 transition-all cursor-pointer select-none ${
+      isActive
+        ? 'bg-neo-yellow text-black border-black shadow-neo-sm font-black'
+        : 'border-transparent text-neutral-800 dark:text-neutral-200 hover:border-black hover:bg-neo-yellow hover:text-black hover:shadow-neo-sm dark:hover:border-neo-yellow dark:hover:bg-black dark:hover:text-neo-yellow dark:hover:shadow-[2px_2px_0px_0px_#FFE600] hover:-translate-x-0.5 hover:-translate-y-0.5'
+    }`;
 
   return (
     <header className="sticky top-0 z-40 w-full bg-neo-bg dark:bg-neo-darkBg border-b-3 border-black">
@@ -65,43 +107,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
             <Link
               to="/"
               onClick={handleHomeClick}
-              className={`px-3.5 py-1.5 border-2 transition-all cursor-pointer select-none ${
-                location.pathname === '/' && !location.hash
-                  ? 'bg-neo-yellow text-black border-black shadow-neo-sm font-black'
-                  : 'border-transparent text-neutral-800 dark:text-neutral-200 hover:border-black hover:bg-neo-yellow hover:text-black hover:shadow-neo-sm dark:hover:border-neo-yellow dark:hover:bg-black dark:hover:text-neo-yellow dark:hover:shadow-[2px_2px_0px_0px_#FFE600] hover:-translate-x-0.5 hover:-translate-y-0.5'
-              }`}
+              className={getNavClass(activeSection === 'home')}
             >
               {t.navbar.home}
             </Link>
             <Link
               to="/docs/1-1-why-product-management-is-not-for-everyone"
-              className={`px-3.5 py-1.5 border-2 transition-all flex items-center gap-1.5 cursor-pointer select-none ${
-                isDocs
-                  ? 'bg-neo-yellow text-black border-black shadow-neo-sm font-black'
-                  : 'border-transparent text-neutral-800 dark:text-neutral-200 hover:border-black hover:bg-neo-yellow hover:text-black hover:shadow-neo-sm dark:hover:border-neo-yellow dark:hover:bg-black dark:hover:text-neo-yellow dark:hover:shadow-[2px_2px_0px_0px_#FFE600] hover:-translate-x-0.5 hover:-translate-y-0.5'
-              }`}
+              className={`${getNavClass(activeSection === 'docs')} flex items-center gap-1.5`}
             >
               <BookOpen className="w-4 h-4" />
               <span>{t.navbar.readDocs}</span>
             </Link>
             <Link
               to="/#learning-tracks"
-              onClick={(e) => scrollToSection('learning-tracks', e)}
-              className="px-3.5 py-1.5 border-2 border-transparent text-neutral-800 dark:text-neutral-200 hover:border-black hover:bg-neo-yellow hover:text-black hover:shadow-neo-sm dark:hover:border-neo-yellow dark:hover:bg-black dark:hover:text-neo-yellow dark:hover:shadow-[2px_2px_0px_0px_#FFE600] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all cursor-pointer select-none"
+              onClick={(e) => scrollToSection('learning-tracks', 'tracks', e)}
+              className={getNavClass(activeSection === 'tracks')}
             >
               {t.navbar.tracks}
             </Link>
             <Link
               to="/#modules-section"
-              onClick={(e) => scrollToSection('modules-section', e)}
-              className="px-3.5 py-1.5 border-2 border-transparent text-neutral-800 dark:text-neutral-200 hover:border-black hover:bg-neo-yellow hover:text-black hover:shadow-neo-sm dark:hover:border-neo-yellow dark:hover:bg-black dark:hover:text-neo-yellow dark:hover:shadow-[2px_2px_0px_0px_#FFE600] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all cursor-pointer select-none"
+              onClick={(e) => scrollToSection('modules-section', 'modules', e)}
+              className={getNavClass(activeSection === 'modules')}
             >
               {t.navbar.nineModules}
             </Link>
           </nav>
         </div>
 
-        {/* Right Tools (Clean, Explicit Light & Dark Hover) */}
+        {/* Right Tools */}
         <div className="flex items-center gap-2 sm:gap-2.5">
           {/* Language Switcher */}
           <button
@@ -147,7 +181,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown (Order: Home -> Read Docs -> Tracks -> 9 Modules) */}
+      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t-2 border-black bg-neo-bg dark:bg-neo-darkBg p-4 space-y-2">
           <Link
@@ -156,14 +190,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
               setMobileMenuOpen(false);
               handleHomeClick(e);
             }}
-            className="block p-2.5 font-bold border-2 border-black bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white shadow-neo-sm hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow"
+            className={`block p-2.5 font-bold border-2 border-black shadow-neo-sm transition-all ${
+              activeSection === 'home'
+                ? 'bg-neo-yellow text-black font-black'
+                : 'bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow'
+            }`}
           >
             {t.navbar.home}
           </Link>
           <Link
             to="/docs/1-1-why-product-management-is-not-for-everyone"
             onClick={() => setMobileMenuOpen(false)}
-            className="block p-2.5 font-bold border-2 border-black bg-neo-yellow text-black shadow-neo-sm"
+            className={`block p-2.5 font-bold border-2 border-black shadow-neo-sm transition-all ${
+              activeSection === 'docs'
+                ? 'bg-neo-yellow text-black font-black'
+                : 'bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow'
+            }`}
           >
             {t.navbar.readDocs} (47 Chapters)
           </Link>
@@ -171,9 +213,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
             to="/#learning-tracks"
             onClick={(e) => {
               setMobileMenuOpen(false);
-              scrollToSection('learning-tracks', e);
+              scrollToSection('learning-tracks', 'tracks', e);
             }}
-            className="block p-2.5 font-bold border-2 border-black bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white shadow-neo-sm hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow"
+            className={`block p-2.5 font-bold border-2 border-black shadow-neo-sm transition-all ${
+              activeSection === 'tracks'
+                ? 'bg-neo-yellow text-black font-black'
+                : 'bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow'
+            }`}
           >
             {t.navbar.tracks}
           </Link>
@@ -181,9 +227,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
             to="/#modules-section"
             onClick={(e) => {
               setMobileMenuOpen(false);
-              scrollToSection('modules-section', e);
+              scrollToSection('modules-section', 'modules', e);
             }}
-            className="block p-2.5 font-bold border-2 border-black bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white shadow-neo-sm hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow"
+            className={`block p-2.5 font-bold border-2 border-black shadow-neo-sm transition-all ${
+              activeSection === 'modules'
+                ? 'bg-neo-yellow text-black font-black'
+                : 'bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow'
+            }`}
           >
             {t.navbar.nineModules}
           </Link>
