@@ -24,7 +24,6 @@ const AppContent: React.FC = () => {
     closeDonationModal,
     activeDonation,
     dismissDonation,
-    simulateDonation,
   } = useDonation();
 
   // Global keyboard shortcut listener for Cmd+K / Ctrl+K
@@ -103,7 +102,6 @@ const AppContent: React.FC = () => {
       <DonationModal
         isOpen={isDonationModalOpen}
         onClose={closeDonationModal}
-        onSimulate={() => simulateDonation()}
       />
     </div>
   );

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { X, ExternalLink, QrCode, Sparkles, Heart } from 'lucide-react';
+import { X, ExternalLink, QrCode, Heart } from 'lucide-react';
 import { useLanguage } from '../context/AppContext';
 import { KreateQrWidget } from './KreateQrWidget';
 
 interface DonationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSimulate?: () => void;
 }
 
-export const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, onSimulate }) => {
+export const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'qr' | 'direct'>('qr');
 
@@ -129,23 +128,6 @@ export const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, o
               <div className="pt-2 text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
                 {t.donation.directUrlLabel} <span className="font-bold underline">https://kreate.gg/sirizqi</span>
               </div>
-            </div>
-          )}
-
-          {/* Test / Simulation Option */}
-          {onSimulate && (
-            <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
-              <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
-                {t.donation.webhookEventLabel} <code className="font-bold">tip_received</code>
-              </span>
-              <button
-                onClick={onSimulate}
-                className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2.5 py-1 bg-white dark:bg-neo-darkSurface border border-black shadow-neo-sm hover:bg-neo-yellow hover:text-black transition-all cursor-pointer"
-                title="Trigger a test webhook donation overlay"
-              >
-                <Sparkles className="w-3 h-3 text-neo-pink fill-neo-pink" />
-                <span>{t.donation.simulateAlert}</span>
-              </button>
             </div>
           )}
         </div>
