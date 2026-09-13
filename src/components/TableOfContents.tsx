@@ -10,13 +10,15 @@ import {
   ListOrdered,
   ArrowUp,
   Sparkles,
+  Heart,
+  QrCode,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { DocMetadata, FontSizePreference } from '../types';
 import { useScrollSpy } from '../hooks/useScrollSpy';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useReadingProgress } from '../hooks/useReadingProgress';
-import { useLanguage } from '../context/AppContext';
+import { useLanguage, useDonation } from '../context/AppContext';
 
 interface TableOfContentsProps {
   doc: DocMetadata;
@@ -34,6 +36,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { isCompleted, toggleCompleted, completedDocs } = useReadingProgress();
   const { language, t } = useLanguage();
+  const { openDonationModal } = useDonation();
 
   const [copied, setCopied] = useState(false);
 
@@ -96,7 +99,24 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
         </div>
       </div>
 
-      {/* 2. Chapter Actions Controls Box */}
+      {/* 2. Support Author Mini Card */}
+      <div className="p-3 bg-neo-yellow/20 dark:bg-neutral-800/80 border-2 border-black space-y-2 shadow-neo-sm">
+        <div className="flex items-center gap-2">
+          <Heart className="w-4 h-4 text-black dark:text-neo-yellow fill-current flex-shrink-0" />
+          <span className="font-display font-black text-xs text-neutral-900 dark:text-white leading-tight">
+            {t.donation.readerBoxTitle}
+          </span>
+        </div>
+        <button
+          onClick={openDonationModal}
+          className="w-full py-1.5 px-2.5 bg-neo-yellow text-black border border-black font-display font-black text-xs shadow-neo-sm hover:bg-black hover:text-neo-yellow dark:hover:border-neo-yellow transition-all cursor-pointer select-none flex items-center justify-center gap-1.5"
+        >
+          <QrCode className="w-3.5 h-3.5" />
+          <span>{t.donation.readerBoxButton}</span>
+        </button>
+      </div>
+
+      {/* 3. Chapter Actions Controls Box */}
       <div className="p-4 bg-white dark:bg-neo-darkSurface border-2 border-black shadow-neo space-y-3">
         <div className="flex items-center justify-between text-xs font-bold pb-2 border-b-2 border-black dark:border-white/20">
           <span className="flex items-center gap-1.5 text-neutral-800 dark:text-neutral-200">

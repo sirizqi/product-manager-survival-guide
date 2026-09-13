@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { AppProvider } from './context/AppContext';
+import { AppProvider, useDonation } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ReadingProgressBar } from './components/ReadingProgressBar';
 import { CmdKSearchModal } from './components/CmdKSearchModal';
 import { BookmarksDrawer } from './components/BookmarksDrawer';
+import { DonationOverlay } from './components/DonationOverlay';
+import { DonationModal } from './components/DonationModal';
+import { FloatingDonateButton } from './components/FloatingDonateButton';
 import { LandingPage } from './pages/LandingPage';
 import { DocsLayout } from './pages/DocsLayout';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -14,6 +17,15 @@ const AppContent: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const location = useLocation();
+
+  const {
+    isDonationModalOpen,
+    openDonationModal,
+    closeDonationModal,
+    activeDonation,
+    dismissDonation,
+    simulateDonation,
+  } = useDonation();
 
   // Global keyboard shortcut listener for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -76,6 +88,22 @@ const AppContent: React.FC = () => {
       <BookmarksDrawer
         isOpen={isBookmarksOpen}
         onClose={() => setIsBookmarksOpen(false)}
+      />
+
+      {/* Floating Quick Donate Button */}
+      <FloatingDonateButton onClick={openDonationModal} />
+
+      {/* Real-time Webhook Donation Alert Overlay */}
+      <DonationOverlay
+        donation={activeDonation}
+        onDismiss={dismissDonation}
+      />
+
+      {/* Donation Modal with Live QR Code Widget */}
+      <DonationModal
+        isOpen={isDonationModalOpen}
+        onClose={closeDonationModal}
+        onSimulate={() => simulateDonation()}
       />
     </div>
   );

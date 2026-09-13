@@ -14,6 +14,9 @@ import {
   Menu,
   Hourglass,
   Flame,
+  Heart,
+  QrCode,
+  ExternalLink,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { getDocBySlug, allDocs } from '../data/playbooks';
@@ -21,7 +24,7 @@ import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { TableOfContents } from '../components/TableOfContents';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useReadingProgress } from '../hooks/useReadingProgress';
-import { useLanguage } from '../context/AppContext';
+import { useLanguage, useDonation } from '../context/AppContext';
 import type { FontSizePreference } from '../types';
 
 interface DocPageProps {
@@ -32,6 +35,7 @@ export const DocPage: React.FC<DocPageProps> = ({ onToggleSidebar }) => {
   const { docSlug } = useParams<{ docSlug: string }>();
   const navigate = useNavigate();
   const { language, t } = useLanguage();
+  const { openDonationModal } = useDonation();
 
   const [fontSize, setFontSize] = useState<FontSizePreference>('normal');
 
@@ -111,6 +115,13 @@ export const DocPage: React.FC<DocPageProps> = ({ onToggleSidebar }) => {
         </button>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={openDonationModal}
+            className="p-1.5 bg-neo-yellow text-black border border-black text-xs font-bold shadow-neo-sm cursor-pointer"
+            title={t.donation.modalTitle}
+          >
+            <Heart className="w-4 h-4 fill-current" />
+          </button>
           <button
             onClick={() => toggleBookmark(meta.docSlug)}
             className={`p-1.5 border border-black cursor-pointer ${
@@ -295,6 +306,42 @@ export const DocPage: React.FC<DocPageProps> = ({ onToggleSidebar }) => {
               </button>
             </div>
           )}
+
+          {/* Support Author / Traktir Kopi Card */}
+          <div className="my-6 p-5 bg-white dark:bg-neo-darkSurface border-3 border-black shadow-neo flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 bg-neo-pink border-2 border-black flex items-center justify-center flex-shrink-0 shadow-neo-sm">
+                <Heart className="w-6 h-6 text-black fill-black" />
+              </div>
+              <div>
+                <h4 className="font-display font-black text-sm sm:text-base text-neutral-900 dark:text-white">
+                  {t.donation.readerBoxTitle}
+                </h4>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5">
+                  {t.donation.readerBoxDesc}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+              <button
+                onClick={openDonationModal}
+                className="flex-1 sm:flex-initial px-4 py-2 bg-neo-yellow text-black border-2 border-black font-display font-black text-xs shadow-neo-sm hover:shadow-neo hover:bg-black hover:text-neo-yellow dark:hover:border-neo-yellow transition-all cursor-pointer select-none flex items-center justify-center gap-1.5"
+              >
+                <QrCode className="w-4 h-4" />
+                <span>{t.donation.readerBoxButton}</span>
+              </button>
+              <a
+                href="https://kreate.gg/sirizqi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 border-2 border-black bg-white dark:bg-neo-darkSurface text-neutral-800 dark:text-neutral-200 hover:bg-black hover:text-neo-yellow dark:hover:border-neo-yellow transition-all cursor-pointer"
+                title={t.donation.profileTitle}
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
 
           {/* Previous & Next Chapter Navigation Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">

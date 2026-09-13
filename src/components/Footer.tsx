@@ -117,7 +117,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="pt-6 border-t-2 border-black dark:border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-neutral-600 dark:text-neutral-400">
           <div className="flex items-center gap-1">
-            <span>Built for Product Leaders & Builders with</span>
+            <span>{t.footer.builtWith}</span>
             <Sparkles className="w-3.5 h-3.5 text-neo-pink inline" />
             <span>Neobrutalism UI</span>
           </div>
@@ -131,7 +131,7 @@ export const Footer: React.FC = () => {
             >
               Si Rizqi
             </a>
-            <span> • Your beloved PM</span>
+            <span>{t.footer.yourBelovedPm}</span>
           </div>
         </div>
       </div>

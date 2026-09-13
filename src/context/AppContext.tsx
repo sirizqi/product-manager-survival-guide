@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { translations } from '../data/translations';
 import type { Language, Translations } from '../data/translations';
+import type { DonationItem } from '../types';
 
 // ==========================================
 // Types
@@ -28,6 +29,14 @@ interface AppContextType {
   toggleCompleted: (slug: string) => void;
   isCompleted: (slug: string) => boolean;
   totalCompleted: number;
+
+  // Donation & Webhook Overlay
+  isDonationModalOpen: boolean;
+  openDonationModal: () => void;
+  closeDonationModal: () => void;
+  activeDonation: DonationItem | null;
+  dismissDonation: () => void;
+  simulateDonation: (custom?: Partial<DonationItem>) => Promise<void>;
 }
 
 const STORAGE_KEYS = {
@@ -69,12 +78,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 
-  // 2. Language State (defaulting to Indonesian or English based on user preference)
+  // 2. Language State
   const [language, setLanguageState] = useState<Language>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.LANGUAGE);
       if (saved === 'en' || saved === 'id') return saved;
-      return 'id'; // default to ID as requested
+      return 'id'; // default to Indonesian as requested
     } catch {
       return 'id';
     }
@@ -157,7 +166,88 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     [completedDocs]
   );
 
-  // Sync across tabs if user modifies in another tab
+  // 5. Donation Modal & Webhook Overlay State
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
+  const [activeDonation, setActiveDonation] = useState<DonationItem | null>(null);
+
+  const openDonationModal = useCallback(() => setIsDonationModalOpen(true), []);
+  const closeDonationModal = useCallback(() => setIsDonationModalOpen(false), []);
+  const dismissDonation = useCallback(() => setActiveDonation(null), []);
+
+  const simulateDonation = useCallback(async (custom?: Partial<DonationItem>) => {
+    try {
+      const res = await fetch('/api/donations/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(custom || {}),
+      });
+      if (!res.ok) {
+        // Fallback local simulation if server endpoint is offline
+        setActiveDonation({
+          id: `tip_local_${Date.now()}`,
+          amount: 25000,
+          currency: 'IDR',
+          message: 'Semangat terus nulis playbook PM-nya bang Rizqi!',
+          sender: 'Teman PM',
+          timestamp: new Date().toISOString(),
+          ...custom,
+        });
+      }
+    } catch {
+      setActiveDonation({
+        id: `tip_local_${Date.now()}`,
+        amount: 25000,
+        currency: 'IDR',
+        message: 'Semangat terus nulis playbook PM-nya bang Rizqi!',
+        sender: 'Teman PM',
+        timestamp: new Date().toISOString(),
+        ...custom,
+      });
+    }
+  }, []);
+
+  // 6. Connect to SSE Stream for Live Webhook Tip Notifications
+  useEffect(() => {
+    let eventSource: EventSource | null = null;
+    let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const connectSSE = () => {
+      try {
+        eventSource = new EventSource('/api/donations/stream');
+
+        eventSource.addEventListener('donation', (e) => {
+          try {
+            const data: DonationItem = JSON.parse(e.data);
+            console.log('[SSE] Live Donation received:', data);
+            setActiveDonation(data);
+          } catch (err) {
+            console.error('[SSE] Failed to parse donation event data:', err);
+          }
+        });
+
+        eventSource.onerror = () => {
+          if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+          }
+          // Reconnect after 8 seconds
+          reconnectTimeout = setTimeout(connectSSE, 8000);
+        };
+      } catch {
+        // SSE not supported or server offline, retry later
+        reconnectTimeout = setTimeout(connectSSE, 10000);
+      }
+    };
+
+    connectSSE();
+
+    return () => {
+      if (eventSource) eventSource.close();
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+    };
+  }, []);
+
+  // Sync across tabs
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEYS.COMPLETED && e.newValue) {
@@ -194,6 +284,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       toggleCompleted,
       isCompleted,
       totalCompleted: completedDocs.length,
+      isDonationModalOpen,
+      openDonationModal,
+      closeDonationModal,
+      activeDonation,
+      dismissDonation,
+      simulateDonation,
     }),
     [
       theme,
@@ -208,6 +304,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       completedDocs,
       toggleCompleted,
       isCompleted,
+      isDonationModalOpen,
+      openDonationModal,
+      closeDonationModal,
+      activeDonation,
+      dismissDonation,
+      simulateDonation,
     ]
   );
 
@@ -225,4 +327,24 @@ export function useApp() {
 export function useLanguage() {
   const { language, setLanguage, toggleLanguage, t } = useApp();
   return { language, setLanguage, toggleLanguage, t };
+}
+
+export function useDonation() {
+  const {
+    isDonationModalOpen,
+    openDonationModal,
+    closeDonationModal,
+    activeDonation,
+    dismissDonation,
+    simulateDonation,
+  } = useApp();
+
+  return {
+    isDonationModalOpen,
+    openDonationModal,
+    closeDonationModal,
+    activeDonation,
+    dismissDonation,
+    simulateDonation,
+  };
 }

@@ -77,3 +77,17 @@ export interface PlaybooksOverview {
 
 export type FontSizePreference = 'normal' | 'large' | 'xlarge';
 export type FontFamilyPreference = 'sans' | 'serif' | 'mono';
+
+export interface DonationItem {
+  id: string;
+  amount: number;
+  currency: string;
+  message?: string;
+  sender: string;
+  timestamp: string;
+}
+
+export interface KreateWebhookPayload {
+  event: string;
+  data: DonationItem;
+}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bookmark, Sun, Moon, BookOpen, Menu, X, Flame, Languages } from 'lucide-react';
+import { Bookmark, Sun, Moon, BookOpen, Menu, X, Flame, Languages, Heart } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import { useBookmarks } from '../hooks/useBookmarks';
-import { useLanguage } from '../context/AppContext';
+import { useLanguage, useDonation } from '../context/AppContext';
 
 interface NavbarProps {
   onOpenSearch?: () => void;
@@ -14,6 +14,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const { language, toggleLanguage, t } = useLanguage();
+  const { openDonationModal } = useDonation();
   const { bookmarks } = useBookmarks();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -137,6 +138,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
 
         {/* Right Tools */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Support / Donate Button */}
+          <button
+            onClick={openDonationModal}
+            className="flex items-center gap-1.5 px-3 py-2 bg-neo-yellow text-black border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-black hover:text-neo-yellow dark:hover:border-neo-yellow dark:hover:shadow-[2px_2px_0px_0px_#FFE600] transition-all text-xs font-display font-black cursor-pointer select-none"
+            title={t.donation.modalTitle}
+          >
+            <Heart className="w-4 h-4 text-current fill-current" />
+            <span className="hidden sm:inline">{t.donation.navButton}</span>
+          </button>
+
           {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
@@ -207,7 +218,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
                 : 'bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow'
             }`}
           >
-            {t.navbar.readDocs} (47 Chapters)
+            {t.navbar.readDocs} {language === 'id' ? '(47 Bab)' : '(47 Chapters)'}
           </Link>
           <Link
             to="/#learning-tracks"
@@ -239,12 +250,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
           </Link>
           <button
             onClick={() => {
+              openDonationModal();
+              setMobileMenuOpen(false);
+            }}
+            className="w-full text-left p-2.5 font-bold border-2 border-black bg-neo-yellow text-black shadow-neo-sm hover:bg-black hover:text-neo-yellow flex items-center justify-between cursor-pointer"
+          >
+            <span className="flex items-center gap-1.5 font-display font-black">
+              <Heart className="w-4 h-4 fill-current" />
+              {t.donation.modalTitle}
+            </span>
+            <span className="text-xs font-mono font-bold">QRIS ↗</span>
+          </button>
+          <button
+            onClick={() => {
               toggleLanguage();
               setMobileMenuOpen(false);
             }}
             className="w-full text-left p-2.5 font-bold border-2 border-black bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white shadow-neo-sm hover:bg-neo-yellow hover:text-black dark:hover:bg-black dark:hover:text-neo-yellow flex items-center justify-between"
           >
-            <span>Language</span>
+            <span>{language === 'id' ? 'Bahasa' : 'Language'}</span>
             <span className="px-2 py-0.5 bg-neo-yellow text-black border border-black text-xs font-mono font-bold">
               {language.toUpperCase()}
             </span>

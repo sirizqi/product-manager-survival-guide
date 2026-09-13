@@ -9,6 +9,45 @@ export interface Translations {
     tracks: string;
     searchPlaybooks: string;
     readCount: string;
+    support: string;
+  };
+  donation: {
+    navButton: string;
+    badge: string;
+    modalTitle: string;
+    modalSubtitle: string;
+    tabQr: string;
+    tabDirect: string;
+    scanNoticeTitle: string;
+    scanNoticeSubtitle: string;
+    scanTitle: string;
+    scanSubtitle: string;
+    openModalButton: string;
+    directButton: string;
+    directTitle: string;
+    directSubtitle: string;
+    directUrlLabel: string;
+    openNewTab: string;
+    simulateAlert: string;
+    webhookEventLabel: string;
+    alertTitle: string;
+    justTipped: string;
+    viaKreate: string;
+    landingTitle: string;
+    landingSubtitle: string;
+    landingPerk1: string;
+    landingPerk2: string;
+    landingPerk3: string;
+    readerBoxTitle: string;
+    readerBoxDesc: string;
+    readerBoxButton: string;
+    profileTitle: string;
+    instantBadge: string;
+    pointCamera: string;
+    step1: string;
+    step2: string;
+    openInBrowser: string;
+    close: string;
   };
   landing: {
     heroBadge: string;
@@ -136,6 +175,8 @@ export interface Translations {
     startFromBeginning: string;
     backToTop: string;
     authorPrefix: string;
+    builtWith: string;
+    yourBelovedPm: string;
   };
   notFound: {
     badge: string;
@@ -156,6 +197,45 @@ export const translations: Record<Language, Translations> = {
       tracks: 'Tracks',
       searchPlaybooks: 'Search Playbooks',
       readCount: 'Read',
+      support: 'Support Author',
+    },
+    donation: {
+      navButton: 'Support',
+      badge: 'Support Author',
+      modalTitle: 'Support Si Rizqi',
+      modalSubtitle: 'Scan the QR link with your phone camera or click the button below to donate directly.',
+      tabQr: 'Scan QR Link',
+      tabDirect: 'Kreate.gg Profile',
+      scanNoticeTitle: 'Scan QR or Click Directly',
+      scanNoticeSubtitle: 'Scan with your phone camera or click the link to open the Kreate donation checkout.',
+      scanTitle: 'Scan with Phone Camera',
+      scanSubtitle: 'Opens https://kreate.gg/sirizqi to donate via QRIS, e-wallet, or bank transfer.',
+      openModalButton: 'Open Donation QR',
+      directButton: 'Donate on Kreate.gg ↗',
+      directTitle: 'Donate via Kreate.gg',
+      directSubtitle: 'Click below to open Si Rizqi’s donation page directly in your browser.',
+      directUrlLabel: 'Direct Link:',
+      openNewTab: 'Open Kreate widget in new tab ↗',
+      simulateAlert: '⚡ Test Tip Alert Overlay',
+      webhookEventLabel: 'Webhook Event:',
+      alertTitle: '🎉 New Tip Received!',
+      justTipped: 'just supported Si Rizqi with',
+      viaKreate: 'Via Kreate.gg',
+      landingTitle: 'Want to Support? Click or Scan Below',
+      landingSubtitle: 'If you find these playbooks valuable and want to send a tip to Si Rizqi, feel free to click the link or scan the QR code.',
+      landingPerk1: '100% proceeds go to writing and synthesizing new product playbooks.',
+      landingPerk2: 'Scan QR with your phone camera to open the Kreate donation checkout.',
+      landingPerk3: 'Live real-time overlay will celebrate your tip across the platform!',
+      readerBoxTitle: 'Want to Support the Author?',
+      readerBoxDesc: 'Feel free to donate or scan the QR code.',
+      readerBoxButton: 'Donate',
+      profileTitle: 'Kreate.gg Profile',
+      instantBadge: 'LINK QR',
+      pointCamera: 'Point Phone Camera Here',
+      step1: 'Scan to open Kreate link on mobile',
+      step2: 'Choose tip amount & donate via QRIS',
+      openInBrowser: 'Open in Browser Directly ↗',
+      close: 'Close',
     },
     landing: {
       heroBadge: '47 Real-World Playbooks for Builders & PMs',
@@ -294,6 +374,8 @@ export const translations: Record<Language, Translations> = {
       startFromBeginning: 'Start from Chapter 1.1',
       backToTop: 'Back to Top',
       authorPrefix: 'Author: ',
+      builtWith: 'Built for Product Leaders & Builders with',
+      yourBelovedPm: ' • Your beloved PM',
     },
     notFound: {
       badge: 'Error 404',
@@ -312,6 +394,45 @@ export const translations: Record<Language, Translations> = {
       tracks: 'Pilihan Track',
       searchPlaybooks: 'Cari Topik / Bab',
       readCount: 'Selesai',
+      support: 'Dukung Penulis',
+    },
+    donation: {
+      navButton: 'Donasi',
+      badge: 'Dukung Penulis',
+      modalTitle: 'Donasi untuk Si Rizqi',
+      modalSubtitle: 'Scan QR link lewat kamera HP atau klik tombol di bawah buat langsung donasi.',
+      tabQr: 'Scan QR Link',
+      tabDirect: 'Profil Kreate.gg',
+      scanNoticeTitle: 'Scan QR atau Klik Langsung',
+      scanNoticeSubtitle: 'Scan QR pake kamera HP atau klik tombol buat buka halaman donasi Kreate.',
+      scanTitle: 'Scan Pake Kamera HP',
+      scanSubtitle: 'Membuka https://kreate.gg/sirizqi untuk donasi via QRIS, e-wallet, atau transfer bank.',
+      openModalButton: 'Buka QR Donasi',
+      directButton: 'Donasi via Kreate.gg ↗',
+      directTitle: 'Donasi via Kreate.gg',
+      directSubtitle: 'Klik tombol di bawah buat langsung buka halaman donasi di browser.',
+      directUrlLabel: 'Tautan Langsung:',
+      openNewTab: 'Buka widget Kreate di tab baru ↗',
+      simulateAlert: '⚡ Tes Notifikasi Tip (Simulasi)',
+      webhookEventLabel: 'Event Webhook:',
+      alertTitle: '🎉 Donasi Masuk!',
+      justTipped: 'baru aja traktir Si Rizqi sebesar',
+      viaKreate: 'Via Kreate.gg',
+      landingTitle: 'Mau Donasi? Tinggal Klik atau Scan Saja',
+      landingSubtitle: 'Kalo playbook ini bermanfaat dan kamu mau kasih donasi buat Si Rizqi, silakan klik tombol atau scan QR di bawah.',
+      landingPerk1: '100% donasi dipakai buat riset dan nulis bab-bab playbook PM baru.',
+      landingPerk2: 'Scan QR pake kamera HP buat langsung buka halaman donasi di Kreate.',
+      landingPerk3: 'Notifikasi tip kamu bakal muncul live di layar secara real-time!',
+      readerBoxTitle: 'Mau Donasi Buat Penulis?',
+      readerBoxDesc: 'Silakan klik donasi atau scan QR jika materi ini bermanfaat.',
+      readerBoxButton: 'Donasi',
+      profileTitle: 'Profil Kreate.gg',
+      instantBadge: 'QR LINK',
+      pointCamera: 'Arahkan Kamera HP ke Sini',
+      step1: 'Scan buat buka link donasi Kreate di HP',
+      step2: 'Pilih nominal tip & kirim donasi via QRIS',
+      openInBrowser: 'Buka Langsung di Laptop / Browser ↗',
+      close: 'Tutup',
     },
     landing: {
       heroBadge: '47 Playbook & Realita Lapangan Product Manager',
@@ -369,7 +490,7 @@ export const translations: Record<Language, Translations> = {
       markAsRead: 'Tandai Udah Dibaca',
       markReadShort: 'Tandai Baca',
       readDone: '✓ Udah Dibaca',
-      completedBadge: 'Bab Ini Beres Dibaca! 🎉',
+      completedBadge: 'Mantap, Bab Ini Beres Dibaca! 🎉',
       keyPrinciples: 'Poin Penting Buat Diingat',
       finishedPlaybookPrompt: 'Udah beres baca bab ini?',
       finishedPlaybookSub:
@@ -450,6 +571,8 @@ export const translations: Record<Language, Translations> = {
       startFromBeginning: 'Mulai Baca Dari Bab Pertama',
       backToTop: 'Balik ke Atas',
       authorPrefix: 'Penulis: ',
+      builtWith: 'Dibuat untuk praktisi & builder produk dengan',
+      yourBelovedPm: ' • Your beloved PM',
     },
     notFound: {
       badge: 'Error 404',

@@ -15,9 +15,13 @@ import {
   CheckSquare,
   Sparkles,
   Clock,
+  Heart,
+  QrCode,
+  ExternalLink,
 } from 'lucide-react';
 import { getPlaybooksData } from '../data/playbooks';
-import { useLanguage } from '../context/AppContext';
+import { useLanguage, useDonation } from '../context/AppContext';
+import { KreateQrWidget } from '../components/KreateQrWidget';
 
 interface LandingPageProps {
   onOpenSearch: () => void;
@@ -37,6 +41,7 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onOpenSearch }) => {
   const { language, t } = useLanguage();
+  const { openDonationModal } = useDonation();
   const location = useLocation();
   const [selectedPathway, setSelectedPathway] = useState('transition');
   const [moduleCategoryFilter, setModuleCategoryFilter] = useState<'all' | 'core' | 'scale' | 'practice'>('all');
@@ -661,7 +666,62 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenSearch }) => {
         </div>
       </section>
 
-      {/* 6. Bottom CTA Banner */}
+      {/* 6. Support & Kreate Donation Section */}
+      <section id="support-section" className="py-16 px-4 sm:px-6 lg:px-8 border-b-3 border-black bg-white dark:bg-neo-darkSurface">
+        <div className="max-w-6xl mx-auto">
+          <div className="p-6 sm:p-10 bg-neo-bg dark:bg-neo-darkBg border-3 border-black shadow-neo-xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              {/* Left Column: Concise Info & Direct Buttons */}
+              <div className="lg:col-span-7 space-y-6">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-neo-pink text-black border-2 border-black shadow-neo-sm font-mono font-bold text-xs uppercase tracking-wider mb-3">
+                    <Heart className="w-4 h-4 fill-current" />
+                    <span>{t.donation.badge}</span>
+                  </div>
+                  <h2 className="font-display font-black text-2xl sm:text-4xl text-neutral-900 dark:text-white leading-tight">
+                    {t.donation.landingTitle}
+                  </h2>
+                  <p className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300 mt-2 leading-relaxed">
+                    {t.donation.landingSubtitle}
+                  </p>
+                </div>
+
+                {/* Direct Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+                  <a
+                    href="https://kreate.gg/sirizqi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center font-display font-black text-sm py-3 px-6 bg-neo-yellow text-black border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-black hover:text-neo-yellow hover:border-black dark:hover:bg-black dark:hover:text-neo-yellow dark:hover:border-neo-yellow dark:hover:shadow-[3px_3px_0px_0px_#FFE600] active:translate-x-0 active:translate-y-0 active:shadow-neo-sm transition-all select-none gap-2 cursor-pointer"
+                  >
+                    <span>{t.donation.directButton}</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+
+                  <button
+                    onClick={openDonationModal}
+                    className="inline-flex items-center justify-center font-display font-bold text-sm py-3 px-5 bg-white dark:bg-neo-darkSurface text-neutral-900 dark:text-white border-2 border-black dark:border-white/30 shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-neo-pink hover:text-black hover:border-black dark:hover:bg-black dark:hover:text-neo-pink dark:hover:border-neo-pink dark:hover:shadow-[3px_3px_0px_0px_#FF5C93] active:translate-x-0 active:translate-y-0 active:shadow-neo-sm transition-all cursor-pointer select-none gap-2"
+                  >
+                    <QrCode className="w-4 h-4" />
+                    <span>{t.donation.openModalButton}</span>
+                  </button>
+                </div>
+
+                <div className="p-3 bg-white dark:bg-neo-darkSurface border-2 border-black text-xs font-mono text-neutral-600 dark:text-neutral-400 shadow-neo-sm">
+                  {t.donation.scanSubtitle}
+                </div>
+              </div>
+
+              {/* Right Column: Responsive Vector QR */}
+              <div className="lg:col-span-5 flex flex-col items-center">
+                <KreateQrWidget />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Bottom CTA Banner */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-neo-yellow text-black border-b-3 border-black">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-block p-2 bg-black text-neo-yellow border-2 border-black shadow-neo-sm mb-4">
